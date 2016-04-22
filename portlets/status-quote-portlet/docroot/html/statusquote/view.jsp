@@ -4,6 +4,13 @@
 
 <%@ page import="com.liferay.portal.util.PortalUtil"%>
 <%@ page import="com.liferay.portal.service.UserLocalServiceUtil"%>
+<%@ page
+	import="com.liferay.portal.service.OrganizationLocalServiceUtil"%>
+<%@ page import="com.liferay.portal.service.GroupLocalServiceUtil"%>
+<%@ page import="com.liferay.portal.service.UserLocalServiceUtil"%>
+<%@ page import="com.liferay.portal.model.Group"%>
+<%@ page import="com.liferay.portal.model.Organization"%>
+<%@ page import="com.liferay.portal.model.User"%>
 
 <portlet:defineObjects />
 
@@ -11,6 +18,16 @@
 
 <%
 	String redirect = PortalUtil.getCurrentURL(renderRequest);
+
+	Group group = GroupLocalServiceUtil.getGroup(scopeGroupId);
+	Organization organization = null;
+	User user2 = null;
+	if (group.isOrganization()) {
+		organization = OrganizationLocalServiceUtil.getOrganization(group.getClassPK());
+	} else if (group.isUser()) {
+		user2 = UserLocalServiceUtil.getUserById(group.getClassPK());
+	}
+
 
 	String status = (String) renderRequest.getAttribute("status");
 	String quote = (String) renderRequest.getAttribute("quote");
@@ -34,9 +51,7 @@
 	</blockquote>
 </c:if>
 
-
-<c:if
-	test='<%=permissionChecker.isGroupOwner(themeDisplay.getScopeGroupId())%>'>
+<c:if test="<%=user2.getUserId() == user.getUserId()%>">
 	<a href="<%=editStatusAndQuote%>"> <i class="icon-edit"></i> Edit
 	</a>
 </c:if>

@@ -21,9 +21,7 @@
 
  	long userId = ParamUtil.getLong(request, "userId");
  	
- 	User user2 = UserLocalServiceUtil.getUser(userId);
- 	
- 	String about = (String) user2.getExpandoBridge().getAttribute("about");
+	String about = (String) renderRequest.getAttribute("about");
 %>
 
 
@@ -38,9 +36,10 @@
 	<aui:fieldset>
 
 		<aui:input name="redirect" type="hidden" value="<%=redirect%>" />
+		<aui:input name="userId" type="hidden" value="<%=userId%>" />
 
-		<aui:field-wrapper label="status">
-			<liferay-ui:input-editor name="status"
+		<aui:field-wrapper label="about">
+			<liferay-ui:input-editor name="about"
 				toolbarSet="email" initMethod="initEditor" width="200" />
 			<script type="text/javascript">
         		function <portlet:namespace />initEditor() { return "<%=UnicodeFormatter.toString(about)%>"; }

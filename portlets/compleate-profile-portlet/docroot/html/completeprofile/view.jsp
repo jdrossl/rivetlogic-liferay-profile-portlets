@@ -44,7 +44,7 @@
 	</li>
 	<li>Do not forget selecting your <aui:a
 			href='<%=categorazationUrl%>' title="Account Details"
-			cssClass="use-dialog">skills</aui:a> and fill up the <aui:a
+			cssClass="use-dialog">skills and hobbies</aui:a> and fill up the <aui:a
 			href='<%=customFieldsUrl%>' title="Account Details"
 			cssClass="use-dialog">custom fields</aui:a>.
 	</li>

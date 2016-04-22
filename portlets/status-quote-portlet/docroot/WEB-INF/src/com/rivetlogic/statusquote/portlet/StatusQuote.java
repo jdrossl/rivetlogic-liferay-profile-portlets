@@ -57,9 +57,9 @@ public class StatusQuote extends MVCPortlet {
 		String quote = "";
 		String author = "";
 		try {
-			status = this.getUserSpecificPreferences(renderRequest).getValue("status", "hola");
-			quote = this.getUserSpecificPreferences(renderRequest).getValue("quote", "hola");
-			author = this.getUserSpecificPreferences(renderRequest).getValue("author", "hola");
+			status = this.getUserSpecificPreferences(renderRequest).getValue("status", "");
+			quote = this.getUserSpecificPreferences(renderRequest).getValue("quote", "");
+			author = this.getUserSpecificPreferences(renderRequest).getValue("author", "");
 
 		} catch (SystemException e) {
 			e.printStackTrace();

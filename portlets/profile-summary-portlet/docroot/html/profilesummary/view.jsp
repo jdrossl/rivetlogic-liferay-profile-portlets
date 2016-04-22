@@ -30,85 +30,68 @@
 
 <portlet:defineObjects />
 <theme:defineObjects />
+
 <%
 	String redirect = PortalUtil.getCurrentURL(renderRequest);
 
-	Group group = GroupLocalServiceUtil.getGroup(scopeGroupId);
-	Organization organization = null;
-	User user2 = null;
-	if (group.isOrganization()) {
-		organization = OrganizationLocalServiceUtil.getOrganization(group.getClassPK());
-	} else if (group.isUser()) {
-		user2 = UserLocalServiceUtil.getUserById(group.getClassPK());
-	}
+	Long userId = (Long) renderRequest.getAttribute("userId");
 %>
+<c:choose>
+	<c:when test="<%=userId > 0%>">
 
-<c:if test="<%=user2 != null%>">
+		<portlet:renderURL var="editProfileSummary"
+			windowState="<%=WindowState.MAXIMIZED.toString()%>">
+			<portlet:param name="mvcPath" value="/html/profilesummary/edit.jsp" />
+			<portlet:param name="userId" value="<%=String.valueOf(userId)%>" />
+			<portlet:param name="redirect" value="<%=redirect%>" />
+		</portlet:renderURL>
 
-	<portlet:renderURL var="editProfileSummary"
-		windowState="<%=WindowState.MAXIMIZED.toString()%>">
-		<portlet:param name="mvcPath" value="/html/profilesummary/edit.jsp" />
-		<portlet:param name="userId" value="<%=String.valueOf(user2.getUserId())%>" />
-		<portlet:param name="redirect" value="<%=redirect%>" />
-	</portlet:renderURL>
+		<%
+			List<AssetCategory> skills = (List<AssetCategory>) renderRequest.getAttribute("skills");
+			List<AssetCategory> hobbies = (List<AssetCategory>) renderRequest.getAttribute("hobbies");
+			String about = (String) renderRequest.getAttribute("about");
+		%>
 
-	<%
-		List<AssetCategory> skills = new ArrayList();
-			List<AssetCategory> hobbies = new ArrayList();
+		<b>About:</b>
+		<div><%=about%></div>
 
-			String skillsName = "Skills";
-			String hobbiesName = "Hobbies";
+		<c:if test="<%=userId == user.getUserId()%>">
+			<a href="<%=editProfileSummary%>"> <i class="icon-edit"></i> Edit
+			</a>
+			<br />
+			<br />
+		</c:if>
 
-			List<AssetCategory> categories = AssetCategoryLocalServiceUtil.getCategories(User.class.getName(), user.getPrimaryKey());
+		<b>Hobbies:</b>
 
-			for (AssetCategory category : categories) {
-				AssetVocabulary vocabulary = AssetVocabularyLocalServiceUtil.getVocabulary(category.getVocabularyId());
+		<div>
+			<%
+				for (AssetCategory hobby : hobbies) {
+			%>
+			<span class="label"><%=hobby.getName()%></span>
 
-				if (vocabulary.getName().equals(skillsName)) {
-					skills.add(category);
-				} else if (vocabulary.getName().equals(hobbiesName)) {
-					hobbies.add(category);
+			<%
 				}
-			}
-	%>
+			%>
 
-	<b>About:</b>
-	<div><%=user2.getExpandoBridge().getAttribute("about")%></div>
+		</div>
 
-	<b>Hobbies:</b>
+		<b>Skills:</b>
 
-	<div>
-		<%
-			for (AssetCategory hobby : hobbies) {
-		%>
-		<span class="label"><%=hobby.getName()%></span>
+		<div>
+			<%
+				for (AssetCategory skill : skills) {
+			%>
+			<span class="label"><%=skill.getName()%></span>
 
-		<%
-			}
-		%>
+			<%
+				}
+			%>
 
-	</div>
+		</div>
 
-	<b>Skills:</b>
-
-	<div>
-		<%
-			for (AssetCategory skill : skills) {
-		%>
-		<span class="label"><%=skill.getName()%></span>
-
-		<%
-			}
-		%>
-
-	</div>
-
-	<c:if test="<%=user2.getUserId() == user.getUserId()%>">
-		<br />
-		<a href="<%=editProfileSummary%>"> <i class="icon-edit"></i> Edit
-		</a>
-
-	</c:if>
-
-
-</c:if>
+	</c:when>
+	<c:otherwise>
+		No profile summary for this organization.
+	</c:otherwise>
+</c:choose>
