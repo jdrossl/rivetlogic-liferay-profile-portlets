@@ -2,10 +2,14 @@ package com.rivetlogic.profilesummay;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.User;
+import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portlet.asset.model.AssetCategory;
@@ -19,6 +23,9 @@ import com.liferay.portlet.expando.model.ExpandoValue;
 import com.liferay.portlet.expando.service.ExpandoColumnLocalServiceUtil;
 import com.liferay.portlet.expando.service.ExpandoTableLocalServiceUtil;
 import com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil;
+import com.liferay.portlet.social.model.SocialRelationConstants;
+import com.liferay.portlet.social.service.SocialRelationLocalServiceUtil;
+import com.liferay.portlet.social.service.SocialRequestLocalServiceUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
 import java.io.IOException;
@@ -37,6 +44,7 @@ import javax.portlet.RenderResponse;
 public class ProfileSummaryPortlet extends MVCPortlet {
 
 	private static final String USER_ABOUT_ATRRIBUTE = "about";
+	private static final String USER_QUOTE_ATRRIBUTE = "quote";
 
 	@Override
 	protected void doDispatch(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
@@ -45,7 +53,7 @@ public class ProfileSummaryPortlet extends MVCPortlet {
 			setPreferences(renderRequest);
 
 		} catch (PortalException | SystemException e) {
-			// TODO Auto-generated catch block
+			_log.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -86,7 +94,7 @@ public class ProfileSummaryPortlet extends MVCPortlet {
 			renderRequest.setAttribute("hobbies", hobbies);
 
 		} catch (PortalException | SystemException e) {
-			// TODO Auto-generated catch block
+			_log.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -111,22 +119,66 @@ public class ProfileSummaryPortlet extends MVCPortlet {
 
 		User user2 = this.getUser(renderRequest);
 
+		String quote = "";
 		String about = "";
 		long userId = 0L;
 
 		if (user2 != null) {
-			ExpandoTable table = ExpandoTableLocalServiceUtil.getDefaultTable(user2.getCompanyId(), User.class.getName());
-			ExpandoColumn column = ExpandoColumnLocalServiceUtil.getColumn(table.getTableId(), USER_ABOUT_ATRRIBUTE);
-			ExpandoValue expandoValue = ExpandoValueLocalServiceUtil.getValue(table.getTableId(), column.getColumnId(), user2.getUserId());
+
+			if (user2.getExpandoBridge().hasAttribute(USER_QUOTE_ATRRIBUTE)) {
+				quote = getCustomAtrribute(user2, USER_QUOTE_ATRRIBUTE);
+			}
+
+			if (user2.getExpandoBridge().hasAttribute(USER_ABOUT_ATRRIBUTE)) {
+				about = getCustomAtrribute(user2, USER_ABOUT_ATRRIBUTE);
+			}
+
 			userId = user2.getUserId();
-			about = expandoValue.getString();
 		}
-		
+
+		renderRequest.setAttribute(USER_QUOTE_ATRRIBUTE, quote);
 		renderRequest.setAttribute(USER_ABOUT_ATRRIBUTE, about);
 		renderRequest.setAttribute("userId", userId);
 	}
 
-	public void saveStatusQuote(ActionRequest request, ActionResponse response) throws PortalException, SystemException, IOException {
+	private String getCustomAtrribute(User user, String attribute) {
+		String result = "";
+		try {
+			ExpandoTable table = ExpandoTableLocalServiceUtil.getDefaultTable(user.getCompanyId(), User.class.getName());
+			ExpandoColumn column = ExpandoColumnLocalServiceUtil.getColumn(table.getTableId(), attribute);
+			ExpandoValue expandoValue = ExpandoValueLocalServiceUtil.getValue(table.getTableId(), column.getColumnId(), user.getUserId());
+			result = expandoValue.getString();
+		} catch (Exception e) {
+			_log.error(e.getMessage());
+			e.printStackTrace();
+		}
+
+		return result;
+
+	}
+
+	private void saveCustomAtrribute(User user, String attribute, String value) throws PortalException, SystemException {
+		if (!user.getExpandoBridge().hasAttribute(attribute)) {
+			user.getExpandoBridge().addAttribute(attribute, ExpandoColumnConstants.STRING, false);
+		}
+		user.getExpandoBridge().setAttribute(attribute, value);
+	}
+
+	public void saveProfileQuote(ActionRequest request, ActionResponse response) throws PortalException, SystemException, IOException {
+
+		long userId = ParamUtil.getLong(request, "userId");
+
+		User user = UserLocalServiceUtil.getUser(userId);
+
+		String quote = ParamUtil.getString(request, USER_QUOTE_ATRRIBUTE);
+
+		this.saveCustomAtrribute(user, USER_QUOTE_ATRRIBUTE, quote);
+
+		sendRedirect(request, response);
+
+	}
+
+	public void saveProfileAboutMe(ActionRequest request, ActionResponse response) throws PortalException, SystemException, IOException {
 
 		long userId = ParamUtil.getLong(request, "userId");
 
@@ -134,13 +186,35 @@ public class ProfileSummaryPortlet extends MVCPortlet {
 
 		String about = ParamUtil.getString(request, USER_ABOUT_ATRRIBUTE);
 
-		if (!user.getExpandoBridge().hasAttribute(USER_ABOUT_ATRRIBUTE)) {
-			user.getExpandoBridge().addAttribute(USER_ABOUT_ATRRIBUTE, ExpandoColumnConstants.STRING, false);
-		}
-		user.getExpandoBridge().setAttribute(USER_ABOUT_ATRRIBUTE, about);
+		this.saveCustomAtrribute(user, USER_ABOUT_ATRRIBUTE, about);
 
 		sendRedirect(request, response);
 
 	}
+
+	public void addFriend(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+		Group group = GroupLocalServiceUtil.getGroup(themeDisplay.getScopeGroupId());
+
+		User user = UserLocalServiceUtil.getUserById(group.getClassPK());
+
+		SocialRequestLocalServiceUtil.addRequest(themeDisplay.getUserId(), 0, User.class.getName(), themeDisplay.getUserId(), 1, StringPool.BLANK,
+				user.getUserId());
+	}
+
+	public void deleteFriend(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+		Group group = GroupLocalServiceUtil.getGroup(themeDisplay.getScopeGroupId());
+
+		User user = UserLocalServiceUtil.getUserById(group.getClassPK());
+
+		SocialRelationLocalServiceUtil.deleteRelation(themeDisplay.getUserId(), user.getUserId(), SocialRelationConstants.TYPE_BI_FRIEND);
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(ProfileSummaryPortlet.class);
 
 }

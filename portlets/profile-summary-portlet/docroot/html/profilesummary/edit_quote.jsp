@@ -22,30 +22,25 @@
  	long userId = ParamUtil.getLong(request, "userId");
  	
 	String about = (String) renderRequest.getAttribute("about");
+	
+	String quote = (String) renderRequest.getAttribute("quote");
 %>
 
 
 <liferay-ui:header backURL="<%=redirect%>" localizeTitle="true"
-	showBackURL="true" title="Profile Summary" />
+	showBackURL="true" title="profile-summary" />
 
-<portlet:actionURL var="saveStatusQuoteURL" name="saveStatusQuote" />
+<portlet:actionURL var="saveProfileQuoteURL" name="saveProfileQuote" />
 
-<aui:form action="<%=saveStatusQuoteURL%>" method="POST"
+<aui:form action="<%=saveProfileQuoteURL%>" method="POST"
 	name="<portlet:namespace />fm">
 
 	<aui:fieldset>
 
 		<aui:input name="redirect" type="hidden" value="<%=redirect%>" />
 		<aui:input name="userId" type="hidden" value="<%=userId%>" />
-
-		<aui:field-wrapper label="about">
-			<liferay-ui:input-editor name="about"
-				toolbarSet="email" initMethod="initEditor" width="200" />
-			<script type="text/javascript">
-        		function <portlet:namespace />initEditor() { return "<%=UnicodeFormatter.toString(about)%>"; }
-    		</script>
-		</aui:field-wrapper>
-
+		
+		<aui:input name="quote" type="textarea" value="<%= quote %>" cssClass="input-textarea"></aui:input> 
 
 	</aui:fieldset>
 

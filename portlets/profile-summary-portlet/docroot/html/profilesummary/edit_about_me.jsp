@@ -1,3 +1,6 @@
+<%@page import="com.liferay.portal.model.User"%>
+<%@page import="com.liferay.portal.service.UserLocalServiceUtil"%>
+
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://alloy.liferay.com/tld/aui" prefix="aui"%>
@@ -16,31 +19,33 @@
 <%
 	String redirect = ParamUtil.getString(request, "redirect");
 
-	String status = (String) renderRequest.getAttribute("status");
+ 	long userId = ParamUtil.getLong(request, "userId");
+ 	
+	String about = (String) renderRequest.getAttribute("about");
 	
-	long userId = ParamUtil.getLong(request, "userId");
+	String quote = (String) renderRequest.getAttribute("quote");
 %>
 
 
 <liferay-ui:header backURL="<%=redirect%>" localizeTitle="true"
-	showBackURL="true" title="profile-status" />
+	showBackURL="true" title="profile-summary" />
 
-<portlet:actionURL var="saveStatusQuoteURL" name="saveStatusQuote" />
+<portlet:actionURL var="saveProfileAboutMeURL" name="saveProfileAboutMe" />
 
-<aui:form action="<%=saveStatusQuoteURL%>" method="POST"
+<aui:form action="<%=saveProfileAboutMeURL%>" method="POST"
 	name="<portlet:namespace />fm">
 
 	<aui:fieldset>
 
 		<aui:input name="redirect" type="hidden" value="<%=redirect%>" />
+		<aui:input name="userId" type="hidden" value="<%=userId%>" />
 		
-		<aui:input name="userId" type="hidden" value="<%=String.valueOf(userId)%>" />
 
-		<aui:field-wrapper label="status">
-			<liferay-ui:input-editor name="status"
+		<aui:field-wrapper label="about">
+			<liferay-ui:input-editor name="about"
 				toolbarSet="email" initMethod="initEditor" width="200" />
 			<script type="text/javascript">
-        		function <portlet:namespace />initEditor() { return "<%=UnicodeFormatter.toString(status)%>"; }
+        		function <portlet:namespace />initEditor() { return "<%=UnicodeFormatter.toString(about)%>"; }
     		</script>
 		</aui:field-wrapper>
 
@@ -55,4 +60,3 @@
 	</aui:button-row>
 
 </aui:form>
-

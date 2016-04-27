@@ -4,6 +4,6 @@
 <display>
 	
 	<category name="category.gadgets">
-		<portlet id="status-quote"></portlet>
+		<portlet id="status"></portlet>
 	</category>
 </display>

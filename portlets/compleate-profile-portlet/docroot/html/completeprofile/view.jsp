@@ -27,32 +27,36 @@
 	String myAccountPlid = "2";
 	
 	String categorazationUrl = customFieldsPortletUrl.toString() + "#_" + myAccountPlid + "_tab=_" + myAccountPlid + "_categorization";
-	
-	String customFieldsUrl = customFieldsPortletUrl.toString() + "#_" + myAccountPlid + "_tab=_" + myAccountPlid + "_customFields";
 %>
 
+<aui:container cssClass="complete-profile-container">
+	<aui:row>
+		<aui:col span="10">
+			<p>
+				<b><liferay-ui:message key="welcome-title" /></b>
+			</p>
+			<p>
+				<liferay-ui:message key="welcome-message" />
+			</p>
+			<p>
+				<liferay-ui:message key="aditional-fields" />
+				<aui:a href='<%=categorazationUrl%>' title="my-account"
+					cssClass="use-dialog">
+					<liferay-ui:message key="skills-hobbies" />
+				</aui:a>
+			</p>
+		</aui:col>
+		<aui:col span="2">
+			<aui:a href="<%=themeDisplay.getURLMyAccount().toString()%>"
+				title="my-account" cssClass="btn btn-primary use-dialog go-right">
+				&nbsp;&nbsp;<liferay-ui:message key="edit" />&nbsp;&nbsp;
+			</aui:a>
+			<br/><br/>
 
-<p>
-	Welcome to <b>Rivet Logic Corp.</b>
-</p>
-<p>Take a moment to complete your profile:</p>
-
-<ol>
-	<li>Fill up your <aui:a
-			href="<%=themeDisplay.getURLMyAccount().toString()%>"
-			title="My Account" cssClass="use-dialog">account details</aui:a>.
-	</li>
-	<li>Do not forget selecting your <aui:a
-			href='<%=categorazationUrl%>' title="Account Details"
-			cssClass="use-dialog">skills and hobbies</aui:a> and fill up the <aui:a
-			href='<%=customFieldsUrl%>' title="Account Details"
-			cssClass="use-dialog">custom fields</aui:a>.
-	</li>
-</ol>
-
-
-<aui:button value="Finish" href="<%=portletDisplay.getURLClose()%>"></aui:button>
-
+			<aui:button value="finish" href="<%=portletDisplay.getURLClose()%>" cssClass="go-right"></aui:button>
+		</aui:col>
+	</aui:row>
+</aui:container>
 
 <aui:script>
 	AUI().ready(function() {
