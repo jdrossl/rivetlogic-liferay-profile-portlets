@@ -86,13 +86,18 @@
 		<aui:container cssClass="summary-container">
 			<aui:row>
 
-				<aui:col span="4" cssClass="user-img-container">
-					<img class="user-profile-image"
-						src="<%=user2.getPortraitURL(themeDisplay)%>" />
+				<aui:col>
+					<div class="user-img-container">
+						<div class="user-img-overlay"></div>
+						<img class="user-img-container-img" src="<%=user2.getPortraitURL(themeDisplay)%>" alt="" />
+						<div class="user-profile-img-box" style="background-image: url(<%=user2.getPortraitURL(themeDisplay)%>);"></div>
+					</div>
 				</aui:col>
 
-				<aui:col span="8" cssClass="user-info-container">
+			</aui:row>
 
+			<aui:row cssClass="user-info">
+				<aui:col>
 					<h3>
 						<c:choose>
 							<c:when test="<%=isUserProfileOwner%>">
@@ -152,14 +157,8 @@
 						</c:if>
 					</div>
 
-
-
 				</aui:col>
-
-			</aui:row>
-
-			<aui:row>
-				<aui:col cssClass="user-skills-hobbies">
+				<div css="user-skills-hobbies">
 
 					<c:choose>
 						<c:when
@@ -254,7 +253,7 @@
 
 						</div>
 					</div>
-				</aui:col>
+				</div>
 			</aui:row>
 		</aui:container>
 
@@ -263,4 +262,3 @@
 		<liferay-ui:message key="no-profile-summary"/>
 	</c:otherwise>
 </c:choose>
-
