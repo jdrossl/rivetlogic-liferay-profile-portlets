@@ -77,6 +77,8 @@
 					String quote = (String) renderRequest.getAttribute("quote");
 					String author = (String) renderRequest.getAttribute("author");
 					String about = (String) renderRequest.getAttribute("about");
+					String country = (String) renderRequest.getAttribute("country");
+					String city = (String) renderRequest.getAttribute("city");
 
 					User user2 = UserLocalServiceUtil.getUser(userId);
 					boolean isUserProfileOwner = userId == user.getUserId();
@@ -121,6 +123,11 @@
 					</div>
 
 					<div>
+						<b><liferay-ui:message key="location"/>:</b>
+						<%= country %>, <%= city %>
+					</div>
+
+					<div>
 						<b><liferay-ui:message key="birtdate"/></b>
 						<%=DateUtil.getDate(user2.getBirthday(), "MMMMM d", themeDisplay.getLocale())%>
 					</div>
@@ -156,7 +163,7 @@
 					</div>
 
 				</aui:col>
-				<div css="user-skills-hobbies">
+				<div class="user-skills-hobbies">
 
 					<c:choose>
 						<c:when
@@ -183,11 +190,10 @@
 						<c:when
 							test="<%=SocialRequestLocalServiceUtil.hasRequest(user.getUserId(), User.class.getName(), user.getUserId(),
 												1, user2.getUserId(), SocialRequestConstants.STATUS_PENDING)%>">
-							<div class="add-as-friend alert alert-info pending">
+							<span class="alert alert-info">
 								<aui:icon image="time" />
-
 								<liferay-ui:message key="friend-requested" />
-							</div>
+							</span>
 						</c:when>
 						<c:when
 							test="<%=SocialRequestLocalServiceUtil.hasRequest(user2.getUserId(), User.class.getName(),
