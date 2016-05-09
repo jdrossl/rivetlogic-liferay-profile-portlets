@@ -24,6 +24,8 @@
 	String about = (String) renderRequest.getAttribute("about");
 	
 	String quote = (String) renderRequest.getAttribute("quote");
+	
+	String author = (String) renderRequest.getAttribute("author");
 %>
 
 
@@ -40,7 +42,8 @@
 		<aui:input name="redirect" type="hidden" value="<%=redirect%>" />
 		<aui:input name="userId" type="hidden" value="<%=userId%>" />
 		
-		<aui:input name="quote" type="textarea" value="<%= quote %>" cssClass="input-textarea"></aui:input> 
+		<aui:input name="quote" type="textarea" value="<%= quote %>" cssClass="input-textarea"></aui:input>
+		<aui:input name="author" value="<%= author %>" />
 
 	</aui:fieldset>
 

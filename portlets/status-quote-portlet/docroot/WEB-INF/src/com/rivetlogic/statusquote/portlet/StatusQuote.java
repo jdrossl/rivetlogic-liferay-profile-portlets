@@ -10,13 +10,6 @@ import com.liferay.portal.model.Group;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portlet.expando.model.ExpandoColumn;
-import com.liferay.portlet.expando.model.ExpandoColumnConstants;
-import com.liferay.portlet.expando.model.ExpandoTable;
-import com.liferay.portlet.expando.model.ExpandoValue;
-import com.liferay.portlet.expando.service.ExpandoColumnLocalServiceUtil;
-import com.liferay.portlet.expando.service.ExpandoTableLocalServiceUtil;
-import com.liferay.portlet.expando.service.ExpandoValueLocalServiceUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
 import java.io.IOException;
@@ -24,6 +17,7 @@ import java.io.IOException;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletException;
+import javax.portlet.PortletPreferences;
 import javax.portlet.ReadOnlyException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
@@ -34,7 +28,7 @@ import javax.portlet.ValidatorException;
  */
 public class StatusQuote extends MVCPortlet {
 
-	private static final String USER_STATUS_ATRRIBUTE = "status";
+	public static final String USER_STATUS_ATRRIBUTE = "status";
 
 	private User getUser(RenderRequest renderRequest) throws PortalException, SystemException {
 
@@ -54,42 +48,13 @@ public class StatusQuote extends MVCPortlet {
 
 		User user2 = this.getUser(renderRequest);
 
-		String status = "";
 		long userId = 0L;
 
 		if (user2 != null) {
-
-			if (user2.getExpandoBridge().hasAttribute(USER_STATUS_ATRRIBUTE)) {
-				status = getCustomAtrribute(user2, USER_STATUS_ATRRIBUTE);
-			}
-
 			userId = user2.getUserId();
 		}
-		renderRequest.setAttribute(USER_STATUS_ATRRIBUTE, status);
+
 		renderRequest.setAttribute("userId", userId);
-	}
-
-	private String getCustomAtrribute(User user, String attribute) {
-		String result = "";
-		try {
-			ExpandoTable table = ExpandoTableLocalServiceUtil.getDefaultTable(user.getCompanyId(), User.class.getName());
-			ExpandoColumn column = ExpandoColumnLocalServiceUtil.getColumn(table.getTableId(), attribute);
-			ExpandoValue expandoValue = ExpandoValueLocalServiceUtil.getValue(table.getTableId(), column.getColumnId(), user.getUserId());
-			result = expandoValue.getString();
-		} catch (Exception e) {
-			_log.error(e.getMessage());
-			e.printStackTrace();
-		}
-
-		return result;
-
-	}
-
-	private void saveCustomAtrribute(User user, String attribute, String value) throws PortalException, SystemException {
-		if (!user.getExpandoBridge().hasAttribute(attribute)) {
-			user.getExpandoBridge().addAttribute(attribute, ExpandoColumnConstants.STRING, false);
-		}
-		user.getExpandoBridge().setAttribute(attribute, value);
 	}
 
 	@Override
@@ -125,16 +90,13 @@ public class StatusQuote extends MVCPortlet {
 		super.doView(renderRequest, response);
 	}
 
-	public void saveStatusQuote(ActionRequest request, ActionResponse response) throws SystemException, ReadOnlyException, ValidatorException,
-			IOException, PortalException {
-
-		long userId = ParamUtil.getLong(request, "userId");
-
-		User user = UserLocalServiceUtil.getUser(userId);
+	public void saveStatusQuote(ActionRequest request, ActionResponse response) throws ReadOnlyException, ValidatorException, IOException {
 
 		String status = ParamUtil.getString(request, USER_STATUS_ATRRIBUTE);
 
-		this.saveCustomAtrribute(user, USER_STATUS_ATRRIBUTE, status);
+		PortletPreferences prefs = request.getPreferences();
+		prefs.setValue(USER_STATUS_ATRRIBUTE, status);
+		prefs.store();
 
 		sendRedirect(request, response);
 	}

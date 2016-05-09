@@ -1,8 +1,10 @@
+<%@page import="com.rivetlogic.statusquote.portlet.StatusQuote"%>
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
 <%@ taglib uri="http://liferay.com/tld/theme" prefix="theme"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://alloy.liferay.com/tld/aui" prefix="aui"%>
 
+<%@ page import="com.liferay.portal.kernel.util.StringPool" %>
 <%@ page import="com.liferay.portal.util.PortalUtil"%>
 <%@ page import="com.liferay.portal.service.UserLocalServiceUtil"%>
 <%@ page
@@ -22,7 +24,8 @@
 
 	Long userId = (Long) renderRequest.getAttribute("userId");
 	
-	String status = (String) renderRequest.getAttribute("status");
+	String status = portletPreferences.getValue(StatusQuote.USER_STATUS_ATRRIBUTE, StringPool.BLANK);
+
 %>
 <c:if test="<%=userId > 0%>">
 
@@ -32,16 +35,11 @@
 		<portlet:param name="redirect" value="<%=redirect%>" />
 	</portlet:renderURL>
 
-	<aui:container>
-		<aui:row>
+	<p><%=status%></p>
 
-			<p><%=status%></p>
-
-			<c:if test="<%=userId == user.getUserId()%>">
-				<a href="<%=editStatusURL%>"> <i class="icon-edit"></i> Edit
-				</a>
-			</c:if>
-
-		</aui:row>
-	</aui:container>
+	<c:if test="<%=userId == user.getUserId()%>">
+		<a href="<%=editStatusURL%>"> <i class="icon-edit"></i> Edit
+		</a>
+	</c:if>
+			
 </c:if>

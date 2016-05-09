@@ -75,6 +75,7 @@
 			List<AssetCategory> skills = (List<AssetCategory>) renderRequest.getAttribute("skills");
 					List<AssetCategory> hobbies = (List<AssetCategory>) renderRequest.getAttribute("hobbies");
 					String quote = (String) renderRequest.getAttribute("quote");
+					String author = (String) renderRequest.getAttribute("author");
 					String about = (String) renderRequest.getAttribute("about");
 
 					User user2 = UserLocalServiceUtil.getUser(userId);
@@ -103,11 +104,7 @@
 							</c:otherwise>
 						</c:choose>
 					</h3>
-
-					<div>
-						<h4><%=user2.getJobTitle()%></h4>
-					</div>
-
+					<div class="job-title"><%=user2.getJobTitle()%></div>
 
 					<div class="about-me">
 						<b><liferay-ui:message key="about-me"/></b>
@@ -146,6 +143,7 @@
 							<%=quote%>
 							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" width="20px" height="16px" style="enable-background:new 0 0 45.9 35.3;" xml:space="preserve"><g class="shape" style="-webkit-transform: matrix(0.355556, 0, 0, 0.355556, 0, 1);-moz-transform: matrix(0.355556, 0, 0, 0.355556, 0, 1);transform: matrix(0.355556, 0, 0, 0.355556, 0, 1);"><path fill="#f89406" xmlns:default="http://www.w3.org/2000/svg" d="M10.6,0c3.1,0,5.7,1.2,7.7,3.5c2,2.3,3,5.2,3,8.7c0,5.4-1.7,10.1-5,14.1c-3.3,4-8,6.9-13.8,8.6l-1.1,0.3L0,28.9l0.8-0.3  c2.9-1.2,5.3-2.7,7.1-4.5c1.6-1.6,2.5-3,2.6-4c-0.1-0.1-0.7-0.6-2.7-1.3c-0.7-0.2-1.2-0.4-1.6-0.6c-1.6-0.6-2.9-1.6-3.8-3  c-0.9-1.4-1.3-3.1-1.3-5c0-3,0.9-5.5,2.6-7.4C5.5,1,7.8,0,10.6,0z M2.9,32.6c4.9-1.6,8.8-4.2,11.7-7.6c3-3.6,4.5-7.9,4.5-12.8  c0-3-0.8-5.4-2.5-7.3c-1.6-1.9-3.6-2.8-6.1-2.8c-2.2,0-4,0.7-5.3,2.2c-1.4,1.5-2.1,3.4-2.1,5.9c0,1.5,0.3,2.8,1,3.8  c0.7,1,1.5,1.7,2.7,2.1c0.4,0.1,0.9,0.3,1.6,0.6c2,0.7,4.1,1.6,4.1,3.1c0,1.7-1.1,3.6-3.2,5.7c-1.8,1.8-4.2,3.3-7,4.6L2.9,32.6z   M35.2,0c3.1,0,5.6,1.2,7.7,3.5c2,2.3,3,5.2,3,8.7c0,5.4-1.7,10.1-5,14.1c-3.3,4-7.9,6.9-13.8,8.6L26,35.3l-1.4-6.4l0.8-0.3  c2.9-1.2,5.3-2.7,7.1-4.5c1.6-1.6,2.5-3,2.6-4.1c-0.1-0.1-0.7-0.6-2.6-1.2c-0.7-0.2-1.3-0.4-1.7-0.6c-1.6-0.6-2.8-1.6-3.7-3  c-0.9-1.4-1.3-3.1-1.3-5c0-3,0.9-5.5,2.6-7.4C30.1,1,32.4,0,35.2,0z M27.6,32.6c4.9-1.6,8.8-4.2,11.6-7.6c3-3.6,4.5-7.9,4.5-12.8  c0-3-0.8-5.4-2.5-7.3c-1.6-1.9-3.6-2.8-6-2.8c-2.3,0-4,0.7-5.4,2.2c-1.4,1.5-2,3.4-2,5.9c0,1.5,0.3,2.8,1,3.8c0.7,1,1.5,1.7,2.7,2.1  c0.4,0.1,0.9,0.3,1.6,0.6c2,0.7,4.1,1.6,4.1,3.2c0,1.7-1.1,3.6-3.2,5.7c-1.8,1.8-4.2,3.3-6.9,4.5L27.6,32.6z"></path></g></svg>
 						</div>
+						<div class="quote-author"><%= author %></div>
 						<c:if test="<%=isUserProfileOwner%>">
 							&nbsp;<a href="<%=editProfileQuote%>"><i class="icon-edit"></i>
 								<liferay-ui:message key="edit"/> </a>

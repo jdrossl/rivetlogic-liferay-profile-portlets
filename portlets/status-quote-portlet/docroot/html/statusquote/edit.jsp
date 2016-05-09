@@ -1,3 +1,4 @@
+<%@page import="com.rivetlogic.statusquote.portlet.StatusQuote"%>
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://alloy.liferay.com/tld/aui" prefix="aui"%>
@@ -7,6 +8,8 @@
 <%@ taglib uri="http://liferay.com/tld/security"
 	prefix="liferay-security"%>
 
+<%@ page import="com.liferay.portal.kernel.util.StringPool" %>
+<%@ page import="com.liferay.portal.kernel.util.Constants" %>
 <%@ page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@ page import="com.liferay.portal.kernel.util.UnicodeFormatter" %>
 
@@ -16,7 +19,7 @@
 <%
 	String redirect = ParamUtil.getString(request, "redirect");
 
-	String status = (String) renderRequest.getAttribute("status");
+	String status = portletPreferences.getValue(StatusQuote.USER_STATUS_ATRRIBUTE, StringPool.BLANK);
 	
 	long userId = ParamUtil.getLong(request, "userId");
 %>
@@ -36,13 +39,7 @@
 		
 		<aui:input name="userId" type="hidden" value="<%=String.valueOf(userId)%>" />
 
-		<aui:field-wrapper label="status">
-			<liferay-ui:input-editor name="status"
-				toolbarSet="email" initMethod="initEditor" width="200" />
-			<script type="text/javascript">
-        		function <portlet:namespace />initEditor() { return "<%=UnicodeFormatter.toString(status)%>"; }
-    		</script>
-		</aui:field-wrapper>
+		<aui:input name="status" type="textarea" value="<%= status %>"/>
 
 	</aui:fieldset>
 
@@ -55,4 +52,3 @@
 	</aui:button-row>
 
 </aui:form>
-
