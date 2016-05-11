@@ -7,6 +7,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.model.Address;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.User;
 import com.liferay.portal.service.GroupLocalServiceUtil;
@@ -42,6 +43,8 @@ public class ProfileSummaryPortlet extends MVCPortlet {
 	private static final String USER_ABOUT_ATRRIBUTE = "about";
 	private static final String USER_QUOTE_ATRRIBUTE = "quote";
 	private static final String USER_AUTHOR_ATRRIBUTE = "author";
+	private static final String USER_COUNTRY_ATRRIBUTE = "country";
+	private static final String USER_CITY_ATRRIBUTE = "city";
 
 	@Override
 	protected void doDispatch(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
@@ -120,6 +123,8 @@ public class ProfileSummaryPortlet extends MVCPortlet {
 		String quote = "";
 		String author = "";
 		String about = "";
+		String country = "";
+		String city = "";
 		long userId = 0L;
 
 		if (user2 != null) {
@@ -128,12 +133,20 @@ public class ProfileSummaryPortlet extends MVCPortlet {
 			author = prefs.getValue(USER_AUTHOR_ATRRIBUTE, StringPool.BLANK);
 			about = prefs.getValue(USER_ABOUT_ATRRIBUTE, StringPool.BLANK);
 			
+			List<Address> addresses = user2.getAddresses();
+			if(!addresses.isEmpty()) {
+			    country = addresses.get(0).getCountry().getName(renderRequest.getLocale());
+			    city = addresses.get(0).getCity();
+			}
+			
 			userId = user2.getUserId();
 		}
 
 		renderRequest.setAttribute(USER_QUOTE_ATRRIBUTE, quote);
 		renderRequest.setAttribute(USER_AUTHOR_ATRRIBUTE, author);
 		renderRequest.setAttribute(USER_ABOUT_ATRRIBUTE, about);
+		renderRequest.setAttribute(USER_COUNTRY_ATRRIBUTE, country);
+		renderRequest.setAttribute(USER_CITY_ATRRIBUTE, city);
 		renderRequest.setAttribute("userId", userId);
 	}
 
