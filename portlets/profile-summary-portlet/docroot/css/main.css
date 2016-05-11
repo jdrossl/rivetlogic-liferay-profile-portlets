@@ -1,4 +1,7 @@
 .profile-summary-portlet {
+	.greeting-hd {
+		line-height: 1;
+	}
 	.summary-container {
 		padding: 0;
 	}

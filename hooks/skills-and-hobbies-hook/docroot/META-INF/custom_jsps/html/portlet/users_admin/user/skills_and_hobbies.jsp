@@ -60,22 +60,50 @@
 	List<String> selectedHobbiesList = Arrays.asList(StringUtil.split(selectedHobbies));
 %>
 
+
+<aui:script>
+<%-- 
+  update rlcacheid everytime new version is build for distribution, this 
+  because hooks does not handle well cache and scss processing
+--%>
+<% String rlcacheid = "?build=3"; %>              
+YUI().applyConfig({
+    groups : {
+        'rivet-custom' : {
+            base : Liferay.AUI.getJavaScriptRootPath() + '/rivetlogic/',
+            async : false,
+            modules : {
+                'rl-skills-hobbies-css': {
+                        path: 'rl-skills-hobbies.css<%=rlcacheid %>',
+                        type: 'css'
+                }
+            }
+        }
+    }
+});
+</aui:script>
+
 <aui:container>
 	<c:if test="<%= ExpandoColumnPermissionUtil.contains(permissionChecker, columnSkills, ActionKeys.UPDATE) %>">
 	<h2>Skills</h2>
+	<hr>
 	<aui:row>
 		<aui:col width="60" cssClass="well">
-			<div class="skills-list"><%= skillsList %></div>
+			<div class="skills-list sh-list">
+				<p>Please select your skills:</p>
+				<%= skillsList %>
+			</div>
 		</aui:col>
 		<aui:col width="40">
 			<aui:field-wrapper>
 				<aui:input name="skill-name" />
 				<aui:button name="add-skill" value="add-skill" icon="icon-plus" onClick="addSkill()" />
 			</aui:field-wrapper>
-			<div class="well">
+			<div class="well sh-list">
+				<p>Selected skills:</p>
 				<ul class="selected-skills-list">
 				<c:forEach items="<%= selectedSkillsList %>" var="skill">
-					<li class="selected-skill-item">${ skill }</li>
+					<li class="category-list-item"><i class="icon-tag"></i>${ skill }</li>
 				</c:forEach>
 				</ul>
 			</div>
@@ -87,16 +115,21 @@
 	
 	<c:if test="<%= ExpandoColumnPermissionUtil.contains(permissionChecker, columnHobbies, ActionKeys.UPDATE) %>">
 	<h2>Hobbies</h2>
+	<hr>
 	<aui:row>
 		<aui:col width="60" cssClass="well">
-			<div class=""><%= hobbiesList %></div>
+			<div class="sh-list">
+				<p>Please select your hobbies:</p>
+				<%= hobbiesList %>
+			</div>
 		</aui:col>
 		<aui:col width="40">
 			<aui:field-wrapper>
 				<aui:input name="hobby-name" />
 				<aui:button name="add-hobby" value="add-hobby" icon="icon-plus" />
 			</aui:field-wrapper>
-			<div class="well">
+			<div class="well sh-list">
+				<p>Selected hobbies:</p>
 				<ul>
 				<c:forEach items="<%= selectedHobbiesList %>" var="hobby">
 					<li>${ hobby }</li>
@@ -115,7 +148,7 @@
     	sb.append("<ul>");
     	for(AssetCategory cat : cats) {
     	    sb.append("<li>");
-        	sb.append("<span class=\"category-list-item\">").append(cat.getName()).append("</span>");
+        	sb.append("<a href=\"javascript:void(0);\" class=\"category-list-item\"><i class=\"icon-tag\"></i>").append(cat.getName()).append("</a>");
         	List<AssetCategory> children = AssetCategoryLocalServiceUtil.getChildCategories(cat.getCategoryId());
         	if(!children.isEmpty()) {
         	    buildTree(sb, children);
@@ -145,11 +178,13 @@
 	}
 %>
 <aui:script use="base">
+	YUI().use('rl-skills-hobbies-css', function(Y) {
+	});
 	A.one('.skills-list').delegate('click', function(e) {
 		var skill = e.target.text();
 		var input = A.one('#<portlet:namespace/>selected-skills-value');
 		input.attr('value', input.attr('value') + ',' + skill);
-		A.one('.selected-skills-list').append('<li>' + skill + '</li>');
+		A.one('.selected-skills-list').append('<li class="category-list-item"><i class="icon-tag"></i>' + skill + '</li>');
 	}, '.category-list-item');
 	
 	A.one('.selected-skills-list').delegate('click', function(e) {
