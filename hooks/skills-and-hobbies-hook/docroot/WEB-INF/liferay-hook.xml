@@ -3,9 +3,13 @@
 
 <hook>
     <portal-properties>portal.properties</portal-properties>
+    <language-properties>
+    	content/Language.properties
+    </language-properties>
     <custom-jsp-dir>/META-INF/custom_jsps</custom-jsp-dir>
     <struts-action>
         <struts-action-path>/my_account/edit_user</struts-action-path>
         <struts-action-impl>com.rivetlogic.account.CustomEditAction</struts-action-impl>
     </struts-action>
+
 </hook>

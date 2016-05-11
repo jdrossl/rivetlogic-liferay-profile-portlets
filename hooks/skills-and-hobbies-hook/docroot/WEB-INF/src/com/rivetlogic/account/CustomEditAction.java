@@ -35,6 +35,7 @@ public class CustomEditAction extends BaseStrutsPortletAction {
             LOG.debug("Running custom user edit action");
             User user = PortalUtil.getSelectedUser(actionRequest);
             String selectedSkills = ParamUtil.getString(actionRequest, "selected-skills");
+            //TODO: Create custom field if it doesn't exist
             user.getExpandoBridge().setAttribute("skills", selectedSkills);
         }
     }
