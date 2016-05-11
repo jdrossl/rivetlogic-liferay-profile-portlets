@@ -125,15 +125,20 @@
 
 	private String getCategoriesTree(long groupId, String name) throws Exception {
 	    List<AssetVocabulary> vocabularies = AssetVocabularyLocalServiceUtil.getGroupVocabularies(groupId, false);
+	    StringBuilder tree = new StringBuilder();
 		AssetVocabulary vocabulary = null;
+		
 		for(AssetVocabulary v : vocabularies) {
 		    //TODO: Make vocabulary configurable by Id?
-		    if(name.equals(v.getName())) vocabulary = v;
+		    if(Validator.equals(name, v.getName())) vocabulary = v;
 		}
-		List<AssetCategory> rootCats = AssetCategoryLocalServiceUtil
-		        .getVocabularyRootCategories(vocabulary.getVocabularyId(), -1, -1, null);
-		StringBuilder tree = new StringBuilder();
-		buildTree(tree, rootCats);
+		
+		if(Validator.isNotNull(vocabulary)) {
+		    List<AssetCategory> rootCats = AssetCategoryLocalServiceUtil
+			        .getVocabularyRootCategories(vocabulary.getVocabularyId(), -1, -1, null);
+			buildTree(tree, rootCats);
+		}
+		
 		return tree.toString();
 	}
 %>
