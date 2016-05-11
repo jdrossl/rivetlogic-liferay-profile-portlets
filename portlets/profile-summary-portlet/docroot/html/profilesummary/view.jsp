@@ -21,12 +21,6 @@
 <%@ page import="com.liferay.portal.model.User"%>
 
 <%@ page import="java.util.List"%>
-<%@ page import="com.liferay.portlet.asset.model.AssetCategory"%>
-<%@ page
-	import="com.liferay.portlet.asset.service.AssetCategoryLocalServiceUtil"%>
-<%@ page
-	import="com.liferay.portlet.asset.service.AssetVocabularyLocalServiceUtil"%>
-<%@ page import="com.liferay.portlet.asset.model.AssetVocabulary"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page
 	import="com.liferay.portlet.social.service.SocialRelationLocalServiceUtil"%>
@@ -72,16 +66,16 @@
 		</portlet:renderURL>
 
 		<%
-			List<AssetCategory> skills = (List<AssetCategory>) renderRequest.getAttribute("skills");
-					List<AssetCategory> hobbies = (List<AssetCategory>) renderRequest.getAttribute("hobbies");
-					String quote = (String) renderRequest.getAttribute("quote");
-					String author = (String) renderRequest.getAttribute("author");
-					String about = (String) renderRequest.getAttribute("about");
-					String country = (String) renderRequest.getAttribute("country");
-					String city = (String) renderRequest.getAttribute("city");
+			List<String> skills = (List<String>) renderRequest.getAttribute("skills");
+			List<String> hobbies = (List<String>) renderRequest.getAttribute("hobbies");
+			String quote = (String) renderRequest.getAttribute("quote");
+			String author = (String) renderRequest.getAttribute("author");
+			String about = (String) renderRequest.getAttribute("about");
+			String country = (String) renderRequest.getAttribute("country");
+			String city = (String) renderRequest.getAttribute("city");
 
-					User user2 = UserLocalServiceUtil.getUser(userId);
-					boolean isUserProfileOwner = userId == user.getUserId();
+			User user2 = UserLocalServiceUtil.getUser(userId);
+			boolean isUserProfileOwner = userId == user.getUserId();
 		%>
 
 
@@ -236,9 +230,9 @@
 
 						<div class="tag-container">
 							<%
-								for (AssetCategory skill : skills) {
+								for (String skill : skills) {
 							%>
-							<span class="label"><%=skill.getName()%></span>
+							<span class="label"><%=skill%></span>
 
 							<%
 								}
@@ -251,9 +245,9 @@
 
 						<div class="tag-container">
 							<%
-								for (AssetCategory hobby : hobbies) {
+								for (String hobby : hobbies) {
 							%>
-							<span class="label"><%=hobby.getName()%></span>
+							<span class="label"><%=hobby%></span>
 
 							<%
 								}

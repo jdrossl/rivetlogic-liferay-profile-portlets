@@ -6,6 +6,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.Address;
 import com.liferay.portal.model.Group;
@@ -13,17 +14,14 @@ import com.liferay.portal.model.User;
 import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portlet.asset.model.AssetCategory;
-import com.liferay.portlet.asset.model.AssetVocabulary;
-import com.liferay.portlet.asset.service.AssetCategoryLocalServiceUtil;
-import com.liferay.portlet.asset.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.portlet.social.model.SocialRelationConstants;
 import com.liferay.portlet.social.service.SocialRelationLocalServiceUtil;
 import com.liferay.portlet.social.service.SocialRequestLocalServiceUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.portlet.ActionRequest;
@@ -68,26 +66,17 @@ public class ProfileSummaryPortlet extends MVCPortlet {
 			setPreferences(renderRequest);
 
 			User user = this.getUser(renderRequest);
-
-			List<AssetCategory> skills = new ArrayList<AssetCategory>();
-			List<AssetCategory> hobbies = new ArrayList<AssetCategory>();
-
+			List<String> skills = Collections.emptyList();
+			List<String> hobbies = Collections.emptyList();
+			
 			if (user != null) {
 
-				String skillsName = "Skills";
-				String hobbiesName = "Hobbies";
+				String skillsName = "skills";
+				String hobbiesName = "hobbies";
+				
+				skills = Arrays.asList(StringUtil.split((String)user.getExpandoBridge().getAttribute(skillsName)));
+				hobbies = Arrays.asList(StringUtil.split((String)user.getExpandoBridge().getAttribute(hobbiesName)));
 
-				List<AssetCategory> categories = AssetCategoryLocalServiceUtil.getCategories(User.class.getName(), user.getPrimaryKey());
-
-				for (AssetCategory category : categories) {
-					AssetVocabulary vocabulary = AssetVocabularyLocalServiceUtil.getVocabulary(category.getVocabularyId());
-
-					if (vocabulary.getName().equals(skillsName)) {
-						skills.add(category);
-					} else if (vocabulary.getName().equals(hobbiesName)) {
-						hobbies.add(category);
-					}
-				}
 			}
 
 			renderRequest.setAttribute("skills", skills);
