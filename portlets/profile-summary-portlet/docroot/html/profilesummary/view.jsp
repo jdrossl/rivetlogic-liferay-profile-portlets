@@ -99,7 +99,7 @@
 
 			<aui:row cssClass="user-info">
 				<aui:col>
-					<h3>
+					<h3 class="greeting-hd">
 						<c:choose>
 							<c:when test="<%=isUserProfileOwner%>">
 							    <liferay-ui:message key="welcome-user" arguments="<%=user2.getFirstName()%>" />
