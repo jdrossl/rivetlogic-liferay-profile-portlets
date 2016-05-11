@@ -103,7 +103,7 @@ YUI().applyConfig({
 				<p>Selected skills:</p>
 				<ul class="selected-skills-list">
 				<c:forEach items="<%= selectedSkillsList %>" var="skill">
-					<li class="category-list-item"><i class="icon-tag"></i>${ skill }</li>
+					<li class="selected-skill-item"><i class="icon-tag"></i>${ skill }</li>
 				</c:forEach>
 				</ul>
 			</div>
@@ -184,7 +184,7 @@ YUI().applyConfig({
 		var skill = e.target.text();
 		var input = A.one('#<portlet:namespace/>selected-skills-value');
 		input.attr('value', input.attr('value') + ',' + skill);
-		A.one('.selected-skills-list').append('<li class="category-list-item"><i class="icon-tag"></i>' + skill + '</li>');
+		A.one('.selected-skills-list').append('<li class="selected-skill-item"><i class="icon-tag"></i>' + skill + '</li>');
 	}, '.category-list-item');
 	
 	A.one('.selected-skills-list').delegate('click', function(e) {
@@ -202,6 +202,6 @@ YUI().applyConfig({
 		A.one('#<portlet:namespace/>skill-name').attr('value', '');
 		var input = A.one('#<portlet:namespace/>selected-skills-value');
 		input.attr('value', input.attr('value') + ',' + skill);
-		A.one('.selected-skills-list').append('<li class="selected-skill-item">' + skill + '</li>');
+		A.one('.selected-skills-list').append('<li class="selected-skill-item"><i class="icon-tag"></i>' + skill + '</li>');
 	});
 </aui:script>
