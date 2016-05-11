@@ -52,16 +52,8 @@
 	    String selectedHobbies = valueHobbies.getData();
 	}
 	
-	List<AssetVocabulary> vocabularies = AssetVocabularyLocalServiceUtil.getGroupVocabularies(groupId, false);
-	AssetVocabulary skills = null;
-	for(AssetVocabulary v : vocabularies) {
-	    //TODO: Make vocabulary configurable by Id?
-	    if(v.getName().equals("Skills")) skills = v;
-	}
-	
-	List<AssetCategory> rootCategories = AssetCategoryLocalServiceUtil.getVocabularyRootCategories(skills.getVocabularyId(), -1, -1, null);
-	StringBuilder sb = new StringBuilder();
-	buildTree(sb, rootCategories);
+	String skillsList = getCategoriesTree(groupId, "Skills");
+	String hobbiesList = getCategoriesTree(groupId, "Hobbies");
 	
 	List<String> selected = Arrays.asList(StringUtil.split(selectedSkills));
 %>
@@ -71,7 +63,7 @@
 	<h2>Skills</h2>
 	<aui:row>
 		<aui:col width="60" cssClass="well">
-			<%= sb.toString() %>
+			<%= skillsList %>
 		</aui:col>
 		<aui:col width="40">
 			<aui:field-wrapper>
@@ -91,19 +83,28 @@
 	<aui:input type="hidden" name="selected-skills" value="a,c,b,d" />
 	</c:if>
 	
-	<c:if test="<%= ExpandoColumnPermissionUtil.contains(permissionChecker, columnSkills, ActionKeys.UPDATE) %>">
+	<c:if test="<%= ExpandoColumnPermissionUtil.contains(permissionChecker, columnHobbies, ActionKeys.UPDATE) %>">
 	<h2>Hobbies</h2>
 	<aui:row>
-		<aui:col width="70" cssClass="well">
-			Categories...
+		<aui:col width="60" cssClass="well">
+			<%= hobbiesList %>
 		</aui:col>
-		<aui:col width="30">
-			<aui:fieldset>
+		<aui:col width="40">
+			<aui:field-wrapper>
 				<aui:input name="hobby-name" />
-				<aui:button icon="icon-add" name="add" />
-			</aui:fieldset>
+				<aui:button name="add-hobby" value="add-hobby" icon="icon-plus" />
+			</aui:field-wrapper>
+			<div class="well">
+				<ul>
+				<c:forEach items="<%= selected %>" var="hobby">
+					<li>${ hobby }</li>
+				</c:forEach>
+				</ul>
+			</div>
 		</aui:col>
 	</aui:row>
+	<%-- TODO: Update field on click events --%>
+	<aui:input type="hidden" name="selected-hobbies" value="a,c,b,d" />
 	</c:if>
 </aui:container>
 
@@ -120,5 +121,19 @@
         	sb.append("</li>");
     	}
     	sb.append("</ul>");
+	}
+
+	private String getCategoriesTree(long groupId, String name) throws Exception {
+	    List<AssetVocabulary> vocabularies = AssetVocabularyLocalServiceUtil.getGroupVocabularies(groupId, false);
+		AssetVocabulary vocabulary = null;
+		for(AssetVocabulary v : vocabularies) {
+		    //TODO: Make vocabulary configurable by Id?
+		    if(name.equals(v.getName())) vocabulary = v;
+		}
+		List<AssetCategory> rootCats = AssetCategoryLocalServiceUtil
+		        .getVocabularyRootCategories(vocabulary.getVocabularyId(), -1, -1, null);
+		StringBuilder tree = new StringBuilder();
+		buildTree(tree, rootCats);
+		return tree.toString();
 	}
 %>
