@@ -37,6 +37,7 @@
 	long groupId = themeDisplay.getScopeGroupId();
 	
 	String selectedSkills = StringPool.BLANK;
+	String selectedHobbies = StringPool.BLANK;
 	
 	ExpandoTable tableSkills = ExpandoTableLocalServiceUtil.getDefaultTable(companyId, classNameId);
 	ExpandoColumn columnSkills = ExpandoColumnLocalServiceUtil.getColumn(tableSkills.getTableId(), "skills");
@@ -49,13 +50,14 @@
 	ExpandoColumn columnHobbies = ExpandoColumnLocalServiceUtil.getColumn(tableHobbies.getTableId(), "hobbies");
 	ExpandoValue valueHobbies = ExpandoValueLocalServiceUtil.getValue(classNameId, tableHobbies.getName(), columnHobbies.getName(), user.getUserId());
 	if(Validator.isNotNull(valueHobbies)) {
-	    String selectedHobbies = valueHobbies.getData();
+	    selectedHobbies = valueHobbies.getData();
 	}
 	
 	String skillsList = getCategoriesTree(groupId, "Skills");
 	String hobbiesList = getCategoriesTree(groupId, "Hobbies");
 	
-	List<String> selected = Arrays.asList(StringUtil.split(selectedSkills));
+	List<String> selectedSkillsList = Arrays.asList(StringUtil.split(selectedSkills));
+	List<String> selectedHobbiesList = Arrays.asList(StringUtil.split(selectedHobbies));
 %>
 
 <aui:container>
@@ -63,7 +65,7 @@
 	<h2>Skills</h2>
 	<aui:row>
 		<aui:col width="60" cssClass="well">
-			<%= skillsList %>
+			<div class="skills-list"><%= skillsList %></div>
 		</aui:col>
 		<aui:col width="40">
 			<aui:field-wrapper>
@@ -71,8 +73,8 @@
 				<aui:button name="add-skill" value="add-skill" icon="icon-plus" />
 			</aui:field-wrapper>
 			<div class="well">
-				<ul>
-				<c:forEach items="<%= selected %>" var="skill">
+				<ul class="selected-skills-list">
+				<c:forEach items="<%= selectedSkillsList %>" var="skill">
 					<li>${ skill }</li>
 				</c:forEach>
 				</ul>
@@ -80,14 +82,14 @@
 		</aui:col>
 	</aui:row>
 	<%-- TODO: Update field on click events --%>
-	<aui:input type="hidden" name="selected-skills" value="a,c,b,d" />
+	<aui:input type="hidden" name="selected-skills-value" value="<%= selectedSkills %>" />
 	</c:if>
 	
 	<c:if test="<%= ExpandoColumnPermissionUtil.contains(permissionChecker, columnHobbies, ActionKeys.UPDATE) %>">
 	<h2>Hobbies</h2>
 	<aui:row>
 		<aui:col width="60" cssClass="well">
-			<%= hobbiesList %>
+			<div class=""><%= hobbiesList %></div>
 		</aui:col>
 		<aui:col width="40">
 			<aui:field-wrapper>
@@ -96,7 +98,7 @@
 			</aui:field-wrapper>
 			<div class="well">
 				<ul>
-				<c:forEach items="<%= selected %>" var="hobby">
+				<c:forEach items="<%= selectedHobbiesList %>" var="hobby">
 					<li>${ hobby }</li>
 				</c:forEach>
 				</ul>
@@ -113,7 +115,7 @@
     	sb.append("<ul>");
     	for(AssetCategory cat : cats) {
     	    sb.append("<li>");
-        	sb.append(cat.getName());
+        	sb.append("<span class=\"category-list-item\">").append(cat.getName()).append("</span>");
         	List<AssetCategory> children = AssetCategoryLocalServiceUtil.getChildCategories(cat.getCategoryId());
         	if(!children.isEmpty()) {
         	    buildTree(sb, children);
@@ -142,3 +144,11 @@
 		return tree.toString();
 	}
 %>
+<aui:script use="base">
+	A.one('.skills-list').delegate('click', function(e) {
+		var skill = e.target.text();
+		var input = A.one('#<portlet:namespace/>selected-skills-value');
+		input.attr('value', input.attr('value') + ',' + skill);
+		A.one('.selected-skills-list').append('<li>' + skill + '</li>');
+	}, '.category-list-item');
+</aui:script>
