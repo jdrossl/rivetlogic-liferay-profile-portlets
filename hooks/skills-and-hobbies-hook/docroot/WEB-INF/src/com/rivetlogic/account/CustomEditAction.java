@@ -34,8 +34,12 @@ public class CustomEditAction extends BaseStrutsPortletAction {
         if(Validator.equals(cmd, Constants.UPDATE)) {
             LOG.debug("Running custom user edit action");
             User user = PortalUtil.getSelectedUser(actionRequest);
+            
             String selectedSkills = ParamUtil.getString(actionRequest, "selected-skills-value");
             user.getExpandoBridge().setAttribute(WebKeys.FIELD_SKILLS, selectedSkills);
+            
+            String selectedHobbies = ParamUtil.getString(actionRequest, "selected-hobbies-value");
+            user.getExpandoBridge().setAttribute(WebKeys.FIELD_HOBBIES, selectedHobbies);
         }
     }
     

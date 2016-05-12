@@ -117,20 +117,19 @@ AUI().applyConfig({
 		</aui:col>
 		<aui:col width="40">
 			<aui:field-wrapper>
-				<aui:input cssClass="skill-name input-inline" name="skill-name" label="" placeholder="skill-name"/>
-				<aui:button name="add-skill" value="add" icon="icon-plus" onClick="addSkill()" />
+				<aui:input cssClass="skills-name input-inline" name="skill-name" label="" placeholder="skill-name"/>
+				<aui:button name="add-skill" value="add" icon="icon-plus" onClick="addskills()" />
 			</aui:field-wrapper>
 			<div class="well sh-list">
 				<p><liferay-ui:message key="selected-skills"/></p>
 				<div class="selected-skills-list">
 				<c:forEach items="<%= selectedSkillsList %>" var="skill">
-					<span class="label label-info"><i class="icon-tag"></i><span class="selected-skill-item">${ skill }</span><a class="delete js-delete" href="#"><i class="icon-remove-sign"></i></a></span> 
+					<span class="label label-info"><i class="icon-tag"></i><span class="selected-skills-item">${ skill }</span><a class="delete js-delete" href="#"><i class="icon-remove-sign"></i></a></span> 
 				</c:forEach>
 				</div>
 			</div>
 		</aui:col>
 	</aui:row>
-	<%-- TODO: Update field on click events --%>
 	<aui:input type="hidden" name="selected-skills-value" cssClass="selected-skills-value" value="<%= selectedSkills %>" />
 	</c:if>
 	
@@ -138,40 +137,39 @@ AUI().applyConfig({
 	<c:if test="<%= hobbiesPermission %>">
 	<aui:row>
 		<aui:col width="60" cssClass="well">
-			<div class="sh-list">
+			<div class="hobbies-list sh-list">
 				<p><liferay-ui:message key="please-select-hobbies"/></p>
 				<%= hobbiesList %>
 			</div>
 		</aui:col>
 		<aui:col width="40">
 			<aui:field-wrapper>
-				<aui:input cssClass="input-inline" name="hobby-name" label="" placeholder="hobby-name" />
-				<aui:button name="add-hobby" value="add" icon="icon-plus" onClick="" />
+				<aui:input cssClass="hobbies-name input-inline" name="hobby-name" label="" placeholder="hobby-name"/>
+				<aui:button name="add-hobby" value="add" icon="icon-plus" onClick="addhobbies()" />
 			</aui:field-wrapper>
 			<div class="well sh-list">
 				<p><liferay-ui:message key="selected-hobbies"/></p>
-				<ul>
+				<div class="selected-hobbies-list">
 				<c:forEach items="<%= selectedHobbiesList %>" var="hobby">
-					<li>${ hobby }</li>
+					<span class="label label-info"><i class="icon-tag"></i><span class="selected-hobbies-item">${ hobby }</span><a class="delete js-delete" href="#"><i class="icon-remove-sign"></i></a></span> 
 				</c:forEach>
-				</ul>
+				</div>
 			</div>
 		</aui:col>
 	</aui:row>
-	<%-- TODO: Update field on click events --%>
-	<aui:input type="hidden" name="selected-hobbies" value="a,c,b,d" />
+	<aui:input type="hidden" name="selected-hobbies-value" cssClass="selected-hobbies-value" value="<%= selectedHobbies %>" />
 	</c:if>
 </aui:container>
 
 <%!
-	private void buildTree(StringBuilder sb, List<AssetCategory> cats) throws Exception {
+	private void buildTree(StringBuilder sb, List<AssetCategory> cats, String name) throws Exception {
     	sb.append("<ul>");
     	for(AssetCategory cat : cats) {
     	    sb.append("<li>");
-        	sb.append("<i class=\"icon-tag\"></i><a href=\"javascript:void(0);\" class=\"category-list-item\">").append(cat.getName()).append("</a>");
+        	sb.append("<i class=\"icon-tag\"></i><a href=\"javascript:void(0);\" class=\""+name.toLowerCase()+"-list-item\">").append(cat.getName()).append("</a>");
         	List<AssetCategory> children = AssetCategoryLocalServiceUtil.getChildCategories(cat.getCategoryId());
         	if(!children.isEmpty()) {
-        	    buildTree(sb, children);
+        	    buildTree(sb, children, name);
         	}
         	sb.append("</li>");
     	}
@@ -191,7 +189,7 @@ AUI().applyConfig({
 		if(Validator.isNotNull(vocabulary)) {
 		    List<AssetCategory> rootCats = AssetCategoryLocalServiceUtil
 			        .getVocabularyRootCategories(vocabulary.getVocabularyId(), -1, -1, null);
-			buildTree(tree, rootCats);
+			buildTree(tree, rootCats, name);
 		}
 		
 		return tree.toString();
