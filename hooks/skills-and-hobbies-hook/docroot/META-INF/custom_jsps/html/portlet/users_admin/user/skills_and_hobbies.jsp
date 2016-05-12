@@ -103,7 +103,7 @@ YUI().applyConfig({
 				<p>Selected skills:</p>
 				<ul class="selected-skills-list">
 				<c:forEach items="<%= selectedSkillsList %>" var="skill">
-					<li class="selected-skill-item"><i class="icon-tag"></i>${ skill }</li>
+					<li><i class="icon-tag"></i><span class="selected-skill-item">${ skill }</span></li>
 				</c:forEach>
 				</ul>
 			</div>
@@ -148,7 +148,7 @@ YUI().applyConfig({
     	sb.append("<ul>");
     	for(AssetCategory cat : cats) {
     	    sb.append("<li>");
-        	sb.append("<a href=\"javascript:void(0);\" class=\"category-list-item\"><i class=\"icon-tag\"></i>").append(cat.getName()).append("</a>");
+        	sb.append("<i class=\"icon-tag\"></i><a href=\"javascript:void(0);\" class=\"category-list-item\">").append(cat.getName()).append("</a>");
         	List<AssetCategory> children = AssetCategoryLocalServiceUtil.getChildCategories(cat.getCategoryId());
         	if(!children.isEmpty()) {
         	    buildTree(sb, children);
@@ -184,12 +184,12 @@ YUI().applyConfig({
 		var skill = e.target.text();
 		var input = A.one('#<portlet:namespace/>selected-skills-value');
 		input.attr('value', input.attr('value') + ',' + skill);
-		A.one('.selected-skills-list').append('<li class="selected-skill-item"><i class="icon-tag"></i>' + skill + '</li>');
+		A.one('.selected-skills-list').append('<li><i class="icon-tag"></i><span class="selected-skill-item">' + skill + '</span></li>');
 	}, '.category-list-item');
 	
 	A.one('.selected-skills-list').delegate('click', function(e) {
 		var skill = e.target.text();
-		e.target.remove();
+		e.target.get('parentNode').remove();
 		var input = A.one('#<portlet:namespace/>selected-skills-value');
 		var value = input.attr('value').split(',');
 		var index = value.indexOf(skill);
@@ -202,6 +202,6 @@ YUI().applyConfig({
 		A.one('#<portlet:namespace/>skill-name').attr('value', '');
 		var input = A.one('#<portlet:namespace/>selected-skills-value');
 		input.attr('value', input.attr('value') + ',' + skill);
-		A.one('.selected-skills-list').append('<li class="selected-skill-item"><i class="icon-tag"></i>' + skill + '</li>');
+		A.one('.selected-skills-list').append('<li><i class="icon-tag"></i><span class="selected-skill-item">' + skill + '</span></li>');
 	});
 </aui:script>
