@@ -7,3 +7,7 @@
 .sh-list i {
   margin-right: 5px;
 }
+
+.input-inline {
+	margin-bottom: 0px !important;
+}

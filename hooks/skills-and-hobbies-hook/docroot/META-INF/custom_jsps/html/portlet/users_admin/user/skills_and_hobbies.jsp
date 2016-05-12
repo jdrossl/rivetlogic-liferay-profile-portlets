@@ -96,7 +96,7 @@ YUI().applyConfig({
 		</aui:col>
 		<aui:col width="40">
 			<aui:field-wrapper>
-				<aui:input name="skill-name" />
+				<aui:input cssClass="input-inline" name="skill-name" label="" placeholder="skill-name" />
 				<aui:button name="add-skill" value="add-skill" icon="icon-plus" onClick="addSkill()" />
 			</aui:field-wrapper>
 			<div class="well sh-list">
