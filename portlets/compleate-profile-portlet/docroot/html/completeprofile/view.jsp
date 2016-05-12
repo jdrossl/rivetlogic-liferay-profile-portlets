@@ -26,7 +26,7 @@
 	// TODO: make this dynamically:
 	String myAccountPlid = "2";
 	
-	String categorazationUrl = customFieldsPortletUrl.toString() + "#_" + myAccountPlid + "_tab=_" + myAccountPlid + "_categorization";
+	String categorazationUrl = customFieldsPortletUrl.toString() + "#_" + myAccountPlid + "_tab=_" + myAccountPlid + "_skillsAndHobbies";
 %>
 
 <aui:container cssClass="complete-profile-container">
