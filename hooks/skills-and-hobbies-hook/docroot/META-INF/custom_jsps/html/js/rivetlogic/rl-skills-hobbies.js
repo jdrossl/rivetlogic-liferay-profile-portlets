@@ -42,7 +42,7 @@ AUI.add('rl-skills-hobbies', function (A) {
             }, '.selected-skill-item');
             
             Liferay.provide(window, 'addSkill', function(){
-                var skill = A.one('#<portlet:namespace/>skill-name').attr('value');
+                var skill = self.one('.skill-name').attr('value');
                 self.one('.skill-name').attr('value', '');
                 var input = self.one('.selected-skills-value');
                 var value = input.attr('value');
