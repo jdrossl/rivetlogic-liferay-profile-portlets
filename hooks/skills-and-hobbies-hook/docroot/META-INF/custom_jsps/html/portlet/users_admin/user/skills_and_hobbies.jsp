@@ -83,13 +83,16 @@
   update rlcacheid everytime new version is build for distribution, this 
   because hooks does not handle well cache and scss processing
 --%>
-<% String rlcacheid = "?build=3"; %>              
-YUI().applyConfig({
+<% String rlcacheid = "?build=5"; %>              
+AUI().applyConfig({
     groups : {
         'rivet-custom' : {
             base : Liferay.AUI.getJavaScriptRootPath() + '/rivetlogic/',
             async : false,
             modules : {
+								'rl-skills-hobbies': {
+												path: 'rl-skills-hobbies.js<%=rlcacheid %>'
+								},
                 'rl-skills-hobbies-css': {
                         path: 'rl-skills-hobbies.css<%=rlcacheid %>',
                         type: 'css'
@@ -112,7 +115,7 @@ YUI().applyConfig({
 		</aui:col>
 		<aui:col width="40">
 			<aui:field-wrapper>
-				<aui:input cssClass="input-inline" name="skill-name" label="" placeholder="skill-name"/>
+				<aui:input cssClass="skill-name input-inline" name="skill-name" label="" placeholder="skill-name"/>
 				<aui:button name="add-skill" value="add" icon="icon-plus" onClick="addSkill()" />
 			</aui:field-wrapper>
 			<div class="well sh-list">
@@ -126,7 +129,7 @@ YUI().applyConfig({
 		</aui:col>
 	</aui:row>
 	<%-- TODO: Update field on click events --%>
-	<aui:input type="hidden" name="selected-skills-value" value="<%= selectedSkills %>" />
+	<aui:input type="hidden" name="selected-skills-value" cssClass="selected-skills-value" value="<%= selectedSkills %>" />
 	</c:if>
 	
 	<h3><liferay-ui:message key="hobbies"/></h3>
@@ -192,43 +195,9 @@ YUI().applyConfig({
 		return tree.toString();
 	}
 %>
-<aui:script use="base">
-	YUI().use('rl-skills-hobbies-css', function(Y) {
-	});
+<aui:script use="base,rl-skills-hobbies,rl-skills-hobbies-css">
+	var skillsHobbies = new A.RivetSkillsHobbies({namespace: '<portlet:namespace />'});
 	<c:if test="<%= skillsPermission %>">
-	A.one('.skills-list').delegate('click', function(e) {
-		var skill = e.target.text();
-		var input = A.one('#<portlet:namespace/>selected-skills-value');
-		var value = input.attr('value');
-		if(value != '') {
-			input.attr('value', value + ',' + skill);
-		} else {
-			input.attr('value', skill);
-		}
-		A.one('.selected-skills-list').append('<li><i class="icon-tag"></i><span class="selected-skill-item">' + skill + '</span></li>');
-	}, '.category-list-item');
-	
-	A.one('.selected-skills-list').delegate('click', function(e) {
-		var skill = e.target.text();
-		e.target.get('parentNode').remove();
-		var input = A.one('#<portlet:namespace/>selected-skills-value');
-		var value = input.attr('value').split(',');
-		var index = value.indexOf(skill);
-		value.splice(index, 1);
-		input.attr('value', value.join(','));
-	}, '.selected-skill-item');
-	
-	Liferay.provide(window, 'addSkill', function(){
-		var skill = A.one('#<portlet:namespace/>skill-name').attr('value');
-		A.one('#<portlet:namespace/>skill-name').attr('value', '');
-		var input = A.one('#<portlet:namespace/>selected-skills-value');
-		var value = input.attr('value');
-		if(value != '') {
-			input.attr('value', value + ',' + skill);
-		} else {
-			input.attr('value', skill);
-		}
-		A.one('.selected-skills-list').append('<li><i class="icon-tag"></i><span class="selected-skill-item">' + skill + '</span></li>');
-	});
+	skillsHobbies.initSkills();
 	</c:if>
 </aui:script>
