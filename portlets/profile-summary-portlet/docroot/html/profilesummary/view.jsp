@@ -216,9 +216,6 @@
 							<aui:form action="<%=addAsFriendURL.toString()%>" method="post"
 								name="fm">
 								<div class="add-as-friend">
-									<aui:input label="send-a-message" name="addFriendMessage"
-										type="textarea" />
-
 									<aui:button type="submit" value="add-as-friend" />
 								</div>
 							</aui:form>
