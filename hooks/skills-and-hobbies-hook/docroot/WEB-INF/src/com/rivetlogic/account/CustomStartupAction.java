@@ -10,7 +10,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.auth.CompanyThreadLocal;
 import com.liferay.portal.service.ClassNameLocalServiceUtil;
-import com.liferay.portlet.expando.DuplicateColumnNameException;
+import com.liferay.portlet.expando.NoSuchTableException;
 import com.liferay.portlet.expando.model.ExpandoColumn;
 import com.liferay.portlet.expando.model.ExpandoColumnConstants;
 import com.liferay.portlet.expando.model.ExpandoTable;
@@ -31,14 +31,23 @@ public class CustomStartupAction extends SimpleAction {
         
         ExpandoTable userTable = null;
         
-        try {
-            userTable = ExpandoTableLocalServiceUtil.getDefaultTable(companyId, classNameId);
+        try{
+            userTable = checkTable(companyId, classNameId);
             checkCustomField(userTable, WebKeys.FIELD_SKILLS);
             checkCustomField(userTable, WebKeys.FIELD_HOBBIES);
         } catch(Exception e) {
             LOG.error(e);
         }
         
+    }
+    
+    private ExpandoTable checkTable(long companyId, long classNameId) throws PortalException, SystemException {
+        try {
+            return ExpandoTableLocalServiceUtil.getDefaultTable(companyId, classNameId);
+        } catch(NoSuchTableException e) {
+            LOG.debug("Creating default table");
+            return ExpandoTableLocalServiceUtil.addDefaultTable(companyId, classNameId);
+        }
     }
     
     private void checkCustomField(ExpandoTable table, String name) throws SystemException, PortalException {

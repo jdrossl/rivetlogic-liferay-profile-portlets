@@ -27,14 +27,16 @@
 <%@ page import="com.liferay.portal.util.comparator.GroupIdComparator"%>
 <%@ page import="com.liferay.portlet.asset.service.AssetVocabularyLocalServiceUtil"%>
 <%@ page import="com.liferay.portlet.asset.model.AssetVocabulary"%>
+<%@ page import="com.liferay.portal.service.CompanyLocalServiceUtil"%>
+<%@ page import="com.liferay.portal.util.PortalUtil"%>
 
 <portlet:defineObjects/>
 <theme:defineObjects/>
 
 <%
 	long classNameId = ClassNameLocalServiceUtil.getClassNameId(User.class);
-	long companyId = themeDisplay.getCompanyId();
-	long groupId = themeDisplay.getScopeGroupId();
+	long companyId = PortalUtil.getDefaultCompanyId();
+	long groupId = CompanyLocalServiceUtil.fetchCompany(companyId).getGroupId();
 	
 	String selectedSkills = StringPool.BLANK;
 	String selectedHobbies = StringPool.BLANK;
@@ -183,7 +185,12 @@ YUI().applyConfig({
 	A.one('.skills-list').delegate('click', function(e) {
 		var skill = e.target.text();
 		var input = A.one('#<portlet:namespace/>selected-skills-value');
-		input.attr('value', input.attr('value') + ',' + skill);
+		var value = input.attr('value');
+		if(value != '') {
+			input.attr('value', value + ',' + skill);
+		} else {
+			input.attr('value', skill);
+		}
 		A.one('.selected-skills-list').append('<li><i class="icon-tag"></i><span class="selected-skill-item">' + skill + '</span></li>');
 	}, '.category-list-item');
 	
@@ -201,7 +208,12 @@ YUI().applyConfig({
 		var skill = A.one('#<portlet:namespace/>skill-name').attr('value');
 		A.one('#<portlet:namespace/>skill-name').attr('value', '');
 		var input = A.one('#<portlet:namespace/>selected-skills-value');
-		input.attr('value', input.attr('value') + ',' + skill);
+		var value = input.attr('value');
+		if(value != '') {
+			input.attr('value', value + ',' + skill);
+		} else {
+			input.attr('value', skill);
+		}
 		A.one('.selected-skills-list').append('<li><i class="icon-tag"></i><span class="selected-skill-item">' + skill + '</span></li>');
 	});
 </aui:script>
