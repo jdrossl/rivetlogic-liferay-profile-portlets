@@ -26,7 +26,9 @@ AUI.add('rl-skills-hobbies', function (A) {
                 } else {
                     input.attr('value', skill);
                 }
-                self.one('.selected-skills-list').append('<li><i class="icon-tag"></i><span class="selected-skill-item">' + skill + '</span></li>');
+                self.one('.selected-skills-list').append('<span class="label label-info">' + 
+                    '<i class="icon-tag"></i><span class="selected-skill-item">' + skill + '</span>' +
+                    '<a class="delete js-delete" href="#"><i class="icon-remove-sign"></i></a></span> ');
             }, '.category-list-item');
             
             this.one('.selected-skills-list').delegate('click', function(e) {
@@ -49,8 +51,15 @@ AUI.add('rl-skills-hobbies', function (A) {
                 } else {
                     input.attr('value', skill);
                 }
-                self.one('.selected-skills-list').append('<li><i class="icon-tag"></i><span class="selected-skill-item">' + skill + '</span></li>');
+                self.one('.selected-skills-list').append('<span class="label label-info">' + 
+                    '<i class="icon-tag"></i><span class="selected-skill-item">' + skill + '</span>' + 
+                    '<a class="delete js-delete" href="#"><i class="icon-remove-sign"></i></a></span> ');
             });
+            
+            this.one('.selected-skills-list').delegate('click', function(e) {
+                e.preventDefault();
+                console.log(this);
+            }, '.js-delete');
         }    
     }, {
         ATTRS: {

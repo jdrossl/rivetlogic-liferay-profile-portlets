@@ -120,11 +120,11 @@ AUI().applyConfig({
 			</aui:field-wrapper>
 			<div class="well sh-list">
 				<p><liferay-ui:message key="selected-skills"/></p>
-				<ul class="selected-skills-list">
+				<div class="selected-skills-list">
 				<c:forEach items="<%= selectedSkillsList %>" var="skill">
-					<li><i class="icon-tag"></i><span class="selected-skill-item">${ skill }</span></li>
+					<span class="label label-info"><i class="icon-tag"></i><span class="selected-skill-item">${ skill }</span><a class="delete js-delete" href="#"><i class="icon-remove-sign"></i></a></span> 
 				</c:forEach>
-				</ul>
+				</div>
 			</div>
 		</aui:col>
 	</aui:row>
