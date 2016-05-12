@@ -40,6 +40,8 @@
 	long companyId = PortalUtil.getDefaultCompanyId();
 	long groupId = CompanyLocalServiceUtil.fetchCompany(companyId).getGroupId();
 	
+	User selUser = (User) request.getAttribute("user.selUser");
+	
 	String selectedSkills = StringPool.BLANK;
 	String skillsList = StringPool.BLANK;
 	List<String> selectedSkillsList = Collections.emptyList();
@@ -54,7 +56,7 @@
 	boolean skillsPermission = ExpandoColumnPermissionUtil.contains(permissionChecker, columnSkills, ActionKeys.UPDATE);
 	
 	if(skillsPermission) {
-	    ExpandoValue valueSkills = ExpandoValueLocalServiceUtil.getValue(classNameId, tableSkills.getName(), columnSkills.getName(), user.getUserId());
+	    ExpandoValue valueSkills = ExpandoValueLocalServiceUtil.getValue(classNameId, tableSkills.getName(), columnSkills.getName(), selUser.getUserId());
 		if(Validator.isNotNull(valueSkills)) {
 		    selectedSkills = valueSkills.getData();
 		}
@@ -68,7 +70,7 @@
 	boolean hobbiesPermission = ExpandoColumnPermissionUtil.contains(permissionChecker, columnHobbies, ActionKeys.UPDATE);
 	
 	if(hobbiesPermission) {
-	    ExpandoValue valueHobbies = ExpandoValueLocalServiceUtil.getValue(classNameId, tableHobbies.getName(), columnHobbies.getName(), user.getUserId());
+	    ExpandoValue valueHobbies = ExpandoValueLocalServiceUtil.getValue(classNameId, tableHobbies.getName(), columnHobbies.getName(), selUser.getUserId());
 		if(Validator.isNotNull(valueHobbies)) {
 		    selectedHobbies = valueHobbies.getData();
 		}

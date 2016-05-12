@@ -11,5 +11,9 @@
         <struts-action-path>/my_account/edit_user</struts-action-path>
         <struts-action-impl>com.rivetlogic.account.CustomEditAction</struts-action-impl>
     </struts-action>
+    <struts-action>
+        <struts-action-path>/users_admin/edit_user</struts-action-path>
+        <struts-action-impl>com.rivetlogic.account.CustomEditAction</struts-action-impl>
+    </struts-action>
 
 </hook>
